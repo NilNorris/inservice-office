@@ -1,0 +1,17 @@
+<div class="card flex flex-col gap-4">
+    <div class="font-semibold text-xl">Contact</div>
+    @if (customer && customer.contact) {
+        @for (contact of customer.contact; track contact) {
+         <div class="flex justify-between items-center">
+            
+            <span><i [class]="'me-2 pi '+getIcon(contact.contactType.name)"></i>{{ contact.contactType.name }}</span>
+            @if (contact.url) {
+                <a class="link text-blue-500" target="_blank" href="{{contact.url}}" >{{contact.value}}</a>
+            } @else {
+                 <div>{{contact.value}}</div>
+            }
+        </div>
+    }   
+    }
+</div>
+

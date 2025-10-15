@@ -1,0 +1,46 @@
+<p-fluid class="flex flex-col md:flex-row gap-8">
+    
+    <div class="md:w-1/2">
+        <div>
+            <app-customer-detail-commercial [customer]="customer"></app-customer-detail-commercial>
+        </div>
+       <div class="mt-5 pt-3">
+            <app-customer-detail-category></app-customer-detail-category>
+        </div>
+        <div class="mt-5 pt-3">
+            <app-customer-detail-pricing  [customer]="customer"></app-customer-detail-pricing>
+        </div>
+        <div class="mt-5 pt-3">
+            <app-customer-detail-contact  [customer]="customer"></app-customer-detail-contact>
+        </div>
+        <div class="mt-5 pt-3">
+            <app-customer-detail-extra  [customer]="customer"></app-customer-detail-extra>
+        </div>
+        <div class="mt-5 pt-3">
+            <app-customer-detail-registration></app-customer-detail-registration>
+        </div>
+    </div>
+    <div class="md:w-1/2">
+        <div>
+            <app-customer-detail-portfolio  [customer]="customer"></app-customer-detail-portfolio>
+        </div>
+        <div class="mt-5 pt-3">
+            <app-customer-detail-localization [localization]="customer && customer.localisation ? customer.localisation : []"></app-customer-detail-localization>
+        </div>
+        <div class="mt-5 pt-3">
+            <app-customer-detail-agenda [customer]="customer"></app-customer-detail-agenda>
+        </div>
+    </div>
+</p-fluid>
+@if (loading) {
+    <div class="fixed inset-0 flex items-center justify-center z-50 pointer-events-auto" style="background: rgba(0,0,0,0.2)">
+        <p-progressSpinner
+            strokeWidth="4"
+            class="w-12 h-12"
+            animationDuration=".8s"
+        ></p-progressSpinner>
+    </div>
+}
+
+
+

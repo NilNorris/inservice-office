@@ -1,0 +1,17 @@
+<div class="card flex flex-col gap-4">
+    <div class="font-semibold text-xl">Information Complémentaire</div>
+    @if (customer) {
+         @for (extra of customer?.extra; track extra?.value) {
+            <div class="flex justify-between items-center">
+                <span>{{ extra.title }}</span>
+                <div>
+                    {{ extra.value }}
+                </div>
+            </div>
+        } 
+    } @else {
+        <p>Aunune information</p>
+    }
+   
+</div>
+

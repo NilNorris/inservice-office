@@ -1,0 +1,156 @@
+<p-fluid class="flex flex-col md:flex-row gap-8">
+    
+    <div class="md:w-1/2">
+        <div class="card flex flex-col gap-4">
+            <div class="font-semibold text-xl">Contenu principal</div>
+            <div class="flex flex-col  md:flex-row gap-2">
+                <div class="md:w-1/2 flex items-center gap-2">
+                    <label for="status" class="font-medium">Statut</label>
+                    <p-toggleswitch id="status" [(ngModel)]="status" />
+                </div>
+                <div class="md:w-1/2  flex items-center gap-2">
+                    <label for="video">Type Video</label>
+                    <p-toggleswitch id="video" [(ngModel)]="isVideo" (onChange)="toggleIsVideo($event)" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="title">* Titre</label>
+                <input pInputText id="titlee" type="text" [(ngModel)]="title"/>
+                @if (formSend && title === "") {
+                    <small class="text-red-500">Ce champ est obligatoire</small>
+                }
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="content">Contenu</label>
+                <textarea pTextarea id="address" rows="4" [(ngModel)]="content" style="white-space: pre-line"></textarea>
+            </div>  
+            <div class="flex flex-col gap-2">
+                <p-multiselect [options]="entities" [(ngModel)]="selectedEntities" placeholder="* Sélectionner de(s) entité(s)" optionLabel="label" display="chip" [filter]="true">
+                    <ng-template #selecteditems let-entities>
+                        @for (entity of entities; track entity.slug) {
+                            <div class="inline-flex items-center py-1 px-2 bg-primary text-primary-contrast rounded-border mr-2">
+                                <div>{{ entity.label }}</div>
+                            </div>
+                        }
+                    </ng-template>
+                    <ng-template #item let-entity>
+                        <div class="flex items-center">
+                            <div>{{ entity.label }}</div>
+                        </div>
+                    </ng-template>
+                </p-multiselect>
+                @if (formSend && selectedEntities.length === 0) {
+                    <small class="text-red-500">Un ou plusieurs valeurs sont requises</small>
+                }
+            </div>  
+        </div>
+    </div>
+    <div class="md:w-1/2">
+        <div class="card">
+            <div class="font-semibold text-xl mb-4">Image de couverture</div>
+            @if (formAction === 'UPDATE' && !isChangeCoverImage ) {
+                <div class="flex gap-3">
+                    <img class="cover-image" [src]="previewCoverImageUrl" alt="">
+                    <p-button icon="pi pi-pencil" class="h-full" severity="success" (click)="changeCoverImage()"></p-button>
+                </div>
+            } @else {
+                @if (formAction === 'UPDATE') {
+                    <div class="flex flex-col items-end">
+                        <p-button icon="pi pi-times" class="h-full mb-3" severity="danger" (click)="changeCoverImage()"></p-button>
+                    </div>
+                }
+                <p-fileupload 
+                    name="demo[]"
+                    chooseLabel="Sélectionner le fichier"  
+                    uploadLabel="Télécharger maintenant" 
+                    cancelLabel="Annuler l'action" 
+                    (onSelect)="onCoverImageSelected($event)"
+                    (onRemove)="onCoverImageRemoved($event)" 
+                    [multiple]="false" 
+                    accept="image/*" 
+                    maxFileSize="2000000"  
+                    mode="advanced"
+                    [auto]="true"
+                >
+                    <ng-template #empty>
+                        <div>* Importer une image</div>
+                        @if (formSend && coverImageFile === null) {
+                            <small class="text-red-500">Une image de couverture est obligatoire</small>
+                        }
+                    </ng-template>
+                </p-fileupload>
+            }
+            
+        </div>
+        @if (isVideo) {
+            <div class="card mt-5 pt-3">
+                <div class="font-semibold text-xl mb-4">Video</div>
+                @if (formAction === 'UPDATE' && !isChangeVideo) {
+                    <div class="flex gap-3">
+                        <p-chip  [label]="getVideoName(previewVideo)" class="m-1 chip-pointer" (click)="download(previewVideo)"></p-chip>
+                        <p-button icon="pi pi-pencil" class="h-full" severity="success" (click)="changeVideo()"></p-button>
+                    </div>
+                } @else {
+                     @if (formAction === 'UPDATE') {
+                        <div class="flex flex-col items-end">
+                            <p-button icon="pi pi-times" class="h-full mb-3" severity="danger" (click)="changeVideo()"></p-button>
+                        </div>
+                    }
+                    <p-fileupload 
+                        name="demo[]"
+                        chooseLabel="Sélectionner le fichier"  
+                        uploadLabel="Télécharger maintenant" 
+                        cancelLabel="Annuler l'action" 
+                        (onSelect)="onVideoSelected($event)"
+                        (onRemove)="onVideoRemoved($event)" 
+                        [multiple]="false" 
+                        accept=".mp4" 
+                        maxFileSize="32000000"  
+                        mode="advanced"
+                        [auto]="true"
+                    >
+                        <ng-template #empty>
+                            <div>* Importer un vidéo</div>
+                        @if (formSend && video === null && isVideo) {
+                            <small class="text-red-500">Ce champ est obligatoire</small>
+                        }
+                        </ng-template>
+                    </p-fileupload>
+                }                
+            </div>
+        }
+        <div class="card mt-5 pt-3">
+            <div class="font-semibold text-xl mb-4">Pièce jointes</div>
+            <p-fileupload 
+                name="demo[]"
+                chooseLabel="Sélectionner des fichiers"  
+                uploadLabel="Télécharger maintenant" 
+                cancelLabel="Annuler l'action" 
+                (onSelect)="onFileTipSelected($event)"
+                (onRemove)="onFileTipRemoved($event)" 
+                [multiple]="true" 
+                accept="image/*,.zip,.rar,.pdf,.doc,.docx,.xlsx,.txt" 
+                maxFileSize="20000000"  
+                mode="advanced"
+                [auto]="true"
+                severity="success" 
+            >
+                <ng-template #empty>
+                    <div>Importer des fichiers</div>
+                </ng-template>
+            </p-fileupload>
+        @if (formAction === 'UPDATE') {
+            @for (file of currentFileTips; track file.id) {
+                <p-chip 
+                [label]="formatName(file.name)" 
+                class="m-1 chip-pointer"
+                (click)="download(file.file)" 
+                [removable]="true"
+                (onRemove)="onCurrentFileTipsRemoved(file)">  </p-chip>
+            }
+        }
+        </div>
+    </div>
+</p-fluid>
+
+<p-button class="submit" label="Enregistrer" severity="success" (click)="submit()" [loading]="formLoading"></p-button>

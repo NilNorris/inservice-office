@@ -1,0 +1,28 @@
+<div class="card flex flex-col gap-4">
+    <div class="font-semibold text-xl">Portfolio</div>
+    <div class="flex flex-col gap-2">
+        <div class="card">
+            @if (customer && customer.portfolio.length > 0) {
+                <p-galleria [value]="customer.portfolio" [responsiveOptions]="galleriaResponsiveOptions" [containerStyle]="{ 'max-width': '640px' }" [numVisible]="5">
+                    <ng-template #item let-item>
+                        <div>
+                            <img class="portfolio-image" [src]="getUrl(item.image)" style="width:100%" />     
+                            <div class="text-center">
+                                {{ item.description }}
+                            </div>
+                        </div>                   
+                    </ng-template>
+                    <ng-template #thumbnail let-item>
+                        <img [src]="getUrl(item.image)" width="96"/>
+                    </ng-template>
+                </p-galleria>
+            } @else {
+                <div class="text-center">
+                    Aucune contenue   
+                </div>
+            }
+            
+        </div>
+    </div>
+</div>
+

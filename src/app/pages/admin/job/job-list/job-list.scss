@@ -1,0 +1,11 @@
+.job-image {
+    height: 160px;
+    width: 100%;
+    object-fit: cover;
+    overflow: hidden;
+    background-color: darkgrey;
+    border-bottom: 1px solid var(--surface-border);
+    margin-bottom: 10px;
+    border: 1px solid var(--surface-border);
+    cursor: pointer;
+}

@@ -1,0 +1,15 @@
+.tip-image {
+    height: 100px;
+    width: 140px;
+    object-fit: cover;
+    overflow: hidden;
+    background-color: darkgrey;
+    border-bottom: 1px solid var(--surface-border);
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.badge-status {
+    position: absolute;
+    margin-left: 0px;
+}

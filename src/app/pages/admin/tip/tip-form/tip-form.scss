@@ -1,0 +1,23 @@
+.submit {
+    position: absolute;
+    right: 32px;
+    bottom: 32px;
+}
+
+.cover-image {
+    height: 100px;
+    width: 140px;
+    object-fit: cover;
+    overflow: hidden;
+    background-color: darkgrey;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.chip-pointer {
+    cursor: pointer !important;
+}
+
+.chip-pointer:hover {
+    text-decoration: underline;
+}

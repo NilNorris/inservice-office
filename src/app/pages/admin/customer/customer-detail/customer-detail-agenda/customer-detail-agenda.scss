@@ -1,0 +1,21 @@
+.fc { /* Cible le conteneur principal de FullCalendar */
+    font-size: 0.8em; /* Réduit la taille de la police de 20% */
+}
+
+/* Vous pouvez être plus spécifique pour les en-têtes, les événements, etc. */
+.fc .fc-toolbar-title {
+    font-size: 1em; /* Par rapport à la taille de police réduite du conteneur */
+}
+
+.fc .fc-daygrid-event {
+    font-size: 0.9em;
+}
+
+/* Ajuster la hauteur des lignes pour les événements ou les cellules */
+.fc-daygrid-day-frame {
+    min-height: 50px; /* Exemple, ajustez selon vos besoins */
+}
+
+.pointer-event {
+    cursor: pointer;
+}

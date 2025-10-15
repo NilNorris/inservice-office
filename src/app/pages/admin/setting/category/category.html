@@ -1,0 +1,112 @@
+<div class="card mb-8!">
+    <div class="font-semibold text-xl mb-4 flex justify-between">
+        <div>Catégorie</div>
+        <p-button icon="pi pi-plus" severity="success" (click)="form()" rounded />
+    </div>
+    <p-table [value]="categories" [paginator]="true" [rows]="5" >
+        <ng-template #header>
+            <tr>
+                <th>Icon</th>
+                <th pSortableColumn="name">Label<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="price">Slug<p-sortIcon field="price"></p-sortIcon></th>
+                <th>Description</th>
+                <th>Nb. Clients</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-category>
+            <tr>
+                <td style="width: 15%; min-width: 5rem">
+                    <img [src]="getUrl(category.icon)" class="shadow-lg" alt="{{ category.label }}" width="50" />
+                </td>
+                <td style="width: 35%; min-width: 7rem">{{category.label }}</td>
+                <td style="width: 35%; min-width: 8rem">{{ category.slug }}</td>
+                <td style="width: 35%; min-width: 8rem">{{ category.description }}</td>
+                <td style="width: 35%; min-width: 8rem"><i class="pi pi-eye me-1"></i> {{ category.count }}</td>
+                <td style="width: 15%">
+                    <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-component p-button-text p-button-icon-only"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="6" >
+                    <div class="text-center text-muted-color">
+                        Aucune catégorie trouvé
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="isVisibleForm" [style]="{ width: '460px' }" header="Catégorie de Service" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="card flex flex-col gap-4">                 
+                 <div class="flex flex-col gap-2">
+                    <label for="image">Icone de catégorie</label>
+                    @if (formAction === 'UPDATE' && !isChangeFile ) {
+                        <div class="flex gap-3">
+                            <img class="icon-image" [src]="previewUrl" alt="">
+                            <p-button icon="pi pi-pencil" class="h-full" severity="success" (click)="changeFile()"></p-button>
+                        </div>
+                    } @else {
+                        @if (formAction === 'UPDATE') {
+                            <div class="flex flex-col items-end">
+                                <p-button icon="pi pi-times" class="h-full mb-3" severity="danger" (click)="changeFile()"></p-button>
+                            </div>
+                        }
+                        <p-fileupload 
+                            id="image"
+                            name="demo[]"
+                            chooseLabel="Sélectionner le fichier"  
+                            uploadLabel="Télécharger maintenant" 
+                            cancelLabel="Annuler l'action" 
+                            (onSelect)="onFileSelected($event)"
+                            (onRemove)="onFileRemoved($event)" 
+                            [multiple]="false" 
+                            accept="image/*" 
+                            maxFileSize="2000000"  
+                            mode="advanced"
+                            [auto]="true"
+                        >
+                            <ng-template #empty>
+                                <div>* Importer une image</div>
+                                @if (formSend && file === null) {
+                                    <small class="text-red-500">Une icône est obligatoire</small>
+                                }
+                            </ng-template>
+                        </p-fileupload>
+                    }
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="title">* Libellé</label>
+                    <input pInputText id="title" type="text" [(ngModel)]="label"  />
+                    @if (formSend && !label) {
+                        <small class="text-red-500">Ce champ est obligatoire</small>
+                    } 
+                </div>
+                 <div class="flex flex-col gap-2">
+                    <label for="source">* Slug</label>
+                    <input pInputText id="source" type="text" [(ngModel)]="slug"  />
+                    <small>En majuscule et sans espace, caractère autorisée : de A-Z 0-9 et _</small>
+                    @if (formSend && !slug) {
+                        <small class="text-red-500">Ce champ est obligatoire</small>
+                    } @else if (formSend && !validateSlug(slug)) {
+                        <small class="text-red-500">Slug invalide</small>
+                    }
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="description">Description</label>
+                    <textarea pTextarea id="description" rows="4" [(ngModel)]="description" style="white-space: pre-line" ></textarea>
+                </div>
+               
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Annuler" icon="pi pi-times" severity="danger" text (click)="formClose()" />
+        <p-button label="Enregistrer" icon="pi pi-check" (click)="submit()" [loading]="formLoading" />
+    </ng-template>
+</p-dialog>

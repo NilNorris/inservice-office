@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files */
+@use './tailwind.css';
+@use './layout/layout.scss';
+@use 'primeicons/primeicons.css';
+@use './demo/demo.scss';
+
+@font-face {
+  font-family: 'Outfit';
+  src: url("public/fonts/Outfit-Regular.ttf") format("truetype"); 
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+    font-family: 'Outfit';
+}
+
+.spinner {  
+  position: absolute !important;
+  width:32px !important;
+  margin:0;
+}
+
+:host ::ng-deep .p-progress-spinner {
+  width: 60px;
+  height: 60px;
+  stroke: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+}

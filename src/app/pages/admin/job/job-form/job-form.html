@@ -1,0 +1,78 @@
+<p-dialog [(visible)]="visible" [style]="{ width: '460px' }" header="Offre d'emploi" [modal]="true" (onHide)="close()">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div class="card flex flex-col gap-4">                 
+                 <div class="flex flex-col gap-2">
+                    <label for="image">Image de l'offre d'emploi</label>
+                    @if (formAction === 'UPDATE' && !isChangeFile ) {
+                        <div class="flex gap-3">
+                            <img class="job-image" [src]="previewUrl" alt="">
+                            <p-button icon="pi pi-pencil" class="h-full" severity="success" (click)="changeFile()"></p-button>
+                        </div>
+                    } @else {
+                        @if (formAction === 'UPDATE') {
+                            <div class="flex flex-col items-end">
+                                <p-button icon="pi pi-times" class="h-full mb-3" severity="danger" (click)="changeFile()"></p-button>
+                            </div>
+                        }
+                        <p-fileupload 
+                            id="image"
+                            name="demo[]"
+                            chooseLabel="Sélectionner le fichier"  
+                            uploadLabel="Télécharger maintenant" 
+                            cancelLabel="Annuler l'action" 
+                            (onSelect)="onFileSelected($event)"
+                            (onRemove)="onFileRemoved($event)" 
+                            [multiple]="false" 
+                            accept="image/*" 
+                            maxFileSize="2000000"  
+                            mode="advanced"
+                            [auto]="true"
+                        >
+                            <ng-template #empty>
+                                <div>* Importer une image</div>
+                                @if (formSend && file === null) {
+                                    <small class="text-red-500">Une image est obligatoire</small>
+                                }
+                            </ng-template>
+                        </p-fileupload>
+                    }
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="title">Active</label>
+                    <p-toggleswitch id="status" [(ngModel)]="status" />
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="title">* Titre</label>
+                    <input pInputText id="title" type="text" [(ngModel)]="title"  />
+                    @if (formSend && !title) {
+                        <small class="text-red-500">Ce champ est obligatoire</small>
+                    } 
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="description">Description</label>
+                    <textarea pTextarea id="description" rows="4" [value]="description" style="white-space: pre-line" ></textarea>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label for="source">Source</label>
+                    <input pInputText id="source" type="text" [value]="source"  />
+                </div>
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-6">
+                        <label for="posted_date" class="block font-bold mb-3">Date de publication</label>
+                        <p-datepicker dateFormat="dd/mm/yy" [showIcon]="true" [showButtonBar]="true" [(ngModel)]="posted_date"></p-datepicker>
+                    </div>
+                    <div class="col-span-6">
+                        <label for="exp_date" class="block font-bold mb-3">Date d'expiration</label>
+                        <p-datepicker dateFormat="dd/mm/yy" [showIcon]="true" [showButtonBar]="true" [(ngModel)]="exp_date"></p-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Annuler" icon="pi pi-times" severity="danger" text (click)="close()" />
+        <p-button label="Enregistrer" icon="pi pi-check" (click)="submit()" [loading]="formLoading" />
+    </ng-template>
+</p-dialog>
