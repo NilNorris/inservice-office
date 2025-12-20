@@ -150,34 +150,6 @@ export class CustomerTable {
         this.filter.nativeElement.value = '';
     }
 
-    getSeverity(status: string) {
-        switch (status) {
-            case 'qualified':
-            case 'instock':
-            case 'INSTOCK':
-            case 'DELIVERED':
-            case 'delivered':
-                return 'success';
-
-            case 'negotiation':
-            case 'lowstock':
-            case 'LOWSTOCK':
-            case 'PENDING':
-            case 'pending':
-                return 'warn';
-
-            case 'unqualified':
-            case 'outofstock':
-            case 'OUTOFSTOCK':
-            case 'CANCELLED':
-            case 'cancelled':
-                return 'danger';
-
-            default:
-                return 'info';
-        }
-    }
-
     getAddress(customer:any) {
         if (customer.localisation.length > 0) {
             return customer.localisation[0].city+", "+customer.localisation[0].address;;

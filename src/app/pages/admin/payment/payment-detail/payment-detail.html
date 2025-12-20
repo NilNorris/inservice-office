@@ -1,0 +1,171 @@
+<p-fluid class="flex flex-col md:flex-row gap-8">
+    <div class="md:w-1/2">
+        <div class="card flex flex-col gap-4">    
+            <div class="">
+                <p-avatar class="mr-2" label="P" size="xlarge" shape="circle"></p-avatar>
+                <div class="mt-3">
+                    <p class="font-semibold text-xl">{{ payment?.user.commercial_name }}</p>
+                    <p>{{ payment?.user.service_type }}</p>
+                </div>
+            </div>        
+            <div>
+                <h4>{{ payment?.reason }} - {{ payment?.code }}</h4>
+                <span><i>Date de paiement : {{ payment?.paid_at }}</i></span>                
+            </div>
+            <div class="flex" >
+                <table class="table" style="width:100%">
+                    <tr>
+                        <td>Réf. ID</td>
+                        <td class="flex justify-end">{{ getRef(payment?.id) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Service</td>
+                        <td class="flex justify-end">
+                            @if (getServiceLogoIcon(payment?.service)) {
+                                <img style="width:100px" [src]="getServiceLogoIcon(payment?.service)" alt="">
+                             } @else {
+                                 Autre
+                             }    
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Remettant</td>
+                        <td class="flex justify-end">{{ formatPhoneNumber(payment?.remitter) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Réf. transaction</td>
+                        <td class="flex justify-end">{{ payment?.ref }}</td>
+                    </tr>
+                    <tr>
+                        <td>Montant dûe</td>
+                        <td class="flex justify-end">{{ payment?.amount_due }}ar</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="flex flex-col gap-2 mt-6">
+                <label for="account_credit">Crédit de compte</label>
+                <input pInputText id="account_credit" [value]="payment?.user.credit" type="text" disabled/>
+            </div>
+        </div>
+    </div>
+    <div class="md:w-1/2">
+        <div class="card flex flex-col gap-4 min-h-[570px]">
+            <p-message [severity]="getStatusSeverity(payment?.status)" class="mt-1">
+                {{ getStatusLabel(payment?.status) }}
+            </p-message>
+            <div class="flex flex-col gap-2">
+                <label for="detail">Détail de paiement</label>
+                <textarea pTextarea id="detail" rows="4" style="white-space: pre-line" [(ngModel)]="actionDetail" ></textarea>
+            </div>
+            <div class="flex flex-col gap-2 mt-2">
+                <label for="comment">Commentaire</label>
+                <textarea pTextarea id="comment" rows="4" style="white-space: pre-line" [(ngModel)]="actionComment" ></textarea>
+            </div> 
+        
+            <div class="mt-auto mx-8 flex flex-col gap-3">
+                <p-button label="Enregistrer Comentaire"
+                severity="primary"
+                (click)="setDetailComment()" />
+
+                @if (payment?.status !== 'VALIDATED') {
+                    <p-button label="Valider"
+                              severity="success"
+                              (click)="showValidation()" />
+                }
+            
+                @if (payment?.status !== 'REJECTED') {
+                    <p-button label="Refuser"
+                              severity="danger"
+                              (click)="showRefusal()" />
+                }
+
+            </div>
+            
+        </div>
+        
+    </div>
+</p-fluid>
+
+<p-dialog [(visible)]="isShowValidation" header="Validation de paiement" [style]="{ width: '596px' }" 
+    [modal]="true">
+    <ng-template #content>
+        <div>
+            <div class="flex flex-col gap-2 mt-6">
+                <label for="account_credit">Crédit de compte</label>
+                <input pInputText id="account_credit" [value]="payment?.user.credit" type="text" disabled/>
+            </div>
+            <br>
+            <div class="flex justify-end">
+                <p-button
+                    [loading]="loadingAction"
+                    [disabled]="payment?.user.credit === 0 ||remainingAmount === payment?.amount_due || remainingAmount <= 0 || breakdown > 0"
+                    label="Ventiler"
+                    severity="primary"
+                    (click)="setbreakdown()" />
+            </div>
+            <div class="flex flex-col gap-2 mt-8">
+                <label for="amount_due" >Montant dûe</label>
+                <input pInputText id="amount_due" [value]="payment?.amount_due" type="text" disabled/>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="receivedAmount">Montant reçue</label>
+                <input pInputText id="receivedAmount" [(ngModel)]="receivedAmount" (keyup)="changeReceivedAmount()" type="number" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="remaining">Credit ventilé</label>
+                <input pInputText id="remaining" [(ngModel)]="breakdown" type="text" disabled/>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="remaining">Reste à payer</label>
+                <input pInputText id="remaining" [(ngModel)]="remainingAmount" type="text" disabled/>
+            </div>                
+            <div class="flex flex-col gap-2">
+                <label for="detail">Détail de paiement</label>
+                <textarea pTextarea id="detail" rows="4" style="white-space: pre-line" [(ngModel)]="actionDetail" ></textarea>
+            </div>
+            <div class="flex flex-col gap-2 mt-2">
+                <label for="comment">Commentaire</label>
+                <textarea pTextarea id="comment" rows="4" style="white-space: pre-line" [(ngModel)]="actionComment" ></textarea>
+            </div>      
+        </div>
+        <div class="flex justify-center gap-2 mt-6">
+            <p-button [loading]="loadingAction" label="Valider" class="me-2" severity="success" (click)="submitAction('VALIDATED')"/>
+            <p-button icon="pi pi-times" label="Fermer" severity="danger" (click)="isShowValidation = false" text/>
+        </div>
+     </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="isShowRefusal" header="Refuser paiement" [style]="{ width: '596px' }" 
+    [modal]="true">
+    <ng-template #content>
+        <div>
+            <div class="flex flex-col gap-2 mt-8">
+                <label for="amount_due" >Montant dûe</label>
+                <input pInputText id="amount_due" [value]="payment?.amount_due" type="text" disabled/>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="receivedAmount">Montant reçue</label>
+                <input pInputText id="receivedAmount" [(ngModel)]="receivedAmount" (keyup)="changeReceivedAmount()" type="number" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label for="refund">A rembourser</label>
+                <input pInputText id="refund" [(ngModel)]="refundAmount" type="text" disabled/>
+            </div>                
+            <div class="flex flex-col gap-2">
+                <label for="detail">Détail de paiement</label>
+                <textarea pTextarea id="detail" rows="4" style="white-space: pre-line" [(ngModel)]="actionDetail" ></textarea>
+            </div>
+            <div class="flex flex-col gap-2 mt-2">
+                <label for="comment">Commentaire</label>
+                <textarea pTextarea id="comment" rows="4" style="white-space: pre-line" [(ngModel)]="actionComment" ></textarea>
+            </div>      
+        </div>
+        <div class="flex justify-center gap-2 mt-6">
+            <p-button [loading]="loadingAction" label="Confirmer" class="me-2" severity="success" (click)="refuse()"/>
+            <p-button icon="pi pi-times" label="Fermer" severity="danger" (click)="isShowRefusal = false" text/>
+        </div>
+     </ng-template>
+</p-dialog>
+
+<p-confirmdialog acceptLabel="Oui" rejectLabel="Non" [style]="{ width: '450px' }" />
+

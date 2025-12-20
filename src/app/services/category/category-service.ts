@@ -30,7 +30,7 @@ export class CategoryService {
       return this.http.put(this.appService.API_HOST+'/office/category/', data, {headers:headersHttp});
     }
 
-    deleteCategory(id:any):Observable<Object>  {
+    deleteCategory(id:string):Observable<Object>  {
       return this.http.delete(this.appService.API_HOST+'/office/category/'+id+'/',  {headers:this.appService.getHeaders()});
     }
 }

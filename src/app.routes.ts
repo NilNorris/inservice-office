@@ -13,7 +13,9 @@ export const appRoutes: Routes = [
             { path: 'customer', loadChildren: () => import('./app/pages/admin/customer/customer.routes') },
             { path: 'tip', loadChildren: () => import('./app/pages/admin/tip/tip.routes') },
             { path: 'job', loadChildren: () => import('./app/pages/admin/job/job.routes') },
+            { path: 'ad', loadChildren: () => import('./app/pages/admin/ad/ad.routes') },
             { path: 'setting', loadChildren: () => import('./app/pages/admin/setting/setting.routes') },
+            { path: 'payment', loadChildren: () => import('./app/pages/admin/payment/payment.routes') },
         ]
     },
     {

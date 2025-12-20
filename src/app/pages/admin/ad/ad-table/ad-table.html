@@ -1,0 +1,214 @@
+<div class="card">
+    <div class="font-semibold text-xl mb-4">Annonce/Publicité</div>
+    <p-table #dt1 [value]="ads" dataKey="id" [loading]="loading" [rowHover]="true" [showGridlines]="true">
+        <ng-template #caption>
+            <div class="flex justify-between items-center flex-column sm:flex-row">
+                <div>
+                    @if (ads && ads.length > 0) {
+                    Résultat{{ ads.length>0 ? 's' : '' }}: {{ ads.length }} / {{ count }} affiché{{ ads.length>0 ? 's' :
+                    '' }}
+                    }
+                </div>
+                <div class="flex">
+                    <p-button class="me-2" type="button" severity="info" (click)="toggleFilterPopOver(op2, $event)">
+                        <i class="pi pi-filter"></i>
+                    </p-button>
+                    <p-popover #op2 id="overlay_panel" [style]="{ width: '450px' }">
+                        <div class="font-semibold text-xl mb-4">Filtres</div>
+                        <p-inputgroup>
+                            <p-inputgroup-addon class="input-addon">
+                                Catégorie
+                            </p-inputgroup-addon>
+                            <p-select [(ngModel)]="categoryFilter" [options]="categories" optionLabel="name"
+                                placeholder="Selectionner" (onChange)="applyFilter()" />
+                        </p-inputgroup>
+                        <p-inputgroup class="mt-3">
+                            <p-inputgroup-addon class="input-addon">
+                                Etat
+                            </p-inputgroup-addon>
+                            <p-select [(ngModel)]="statusFilter" [options]="status" optionLabel="name"
+                                placeholder="Selectionner" (onChange)="applyFilter()" />
+                        </p-inputgroup>
+                        <div class="mt-3 text-center">
+                            <p-button class="mt-3" label="Annuler les filtres" severity="danger" rounded
+                                (click)="resetFilter()" [disabled]="isFilterCancelable()" />
+                        </div>
+                    </p-popover>
+                    <p-iconfield iconPosition="left" class="ml-auto">
+                        <p-inputicon>
+                            <i class="pi pi-search"></i>
+                        </p-inputicon>
+                        <input [(ngModel)]="searchFilter" pInputText type="text" placeholder="Nom client/type service"
+                            (keyup)="applyFilter()" />
+                    </p-iconfield>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th>Réf.</th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('user')">
+                        Client
+                        <app-sort-icon [sortKey]="sortKey" field="user" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('title')">
+                        Titre
+                        <app-sort-icon [sortKey]="sortKey" field="title" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('category')">
+                        Catégorie
+                        <app-sort-icon [sortKey]="sortKey" field="category" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('delivery')">
+                        Nb. Diffusion
+                        <app-sort-icon [sortKey]="sortKey" field="delivery" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('status')">
+                        Etat
+                        <app-sort-icon [sortKey]="sortKey" field="status" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('created_at')">
+                        Date de création
+                        <app-sort-icon [sortKey]="sortKey" field="created_at" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('updated_at')">
+                        Date de mise à jour
+                        <app-sort-icon [sortKey]="sortKey" field="updated_at" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-between items-center" (click)="sortBy('validated_at')">
+                        Jours restants
+                        <app-sort-icon [sortKey]="sortKey" field="validated_at" [sortDir]="sortDir" />
+                    </div>
+                </th>
+                <th>Action</th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-ad>
+            <tr>
+                <td>{{ getRef(ad.id) }}</td>
+                <td>{{ ad.user }}</td>
+                <td>{{ ad.title }}</td>
+                <td class="text-primary">{{ ad.category }}</td>
+                <td>
+                    <strong>{{ ad.delivery }}</strong>
+                </td>
+                <td>
+                    <p-tag [value]="getAdStatusInfo(ad.status).label" [severity]="getAdStatusInfo(ad.status).severity"
+                        class="dark:bg-surface-900!" />
+                </td>
+                <td>{{ ad.created_at }}</td>
+                <td>{{ ad.updated_at }}</td>
+                <td>{{ ad.remaining_days }} jour{{ ad.remaining_days > 1 ? 's' : '' }}</td>
+                <td>
+                    <div class="flex">
+                        <p-button class="me-2" icon="pi pi-eye" severity="help" outlined (click)="showContent(ad)" />
+                        <p-button class="me-2" icon="pi pi-fw pi-list" severity="primary" (click)="showValidity(ad)" outlined />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #emptymessage>
+            <tr>
+                <td colspan="10">
+                    <div class="text-center text-muted-color">
+                        Aucune annonce
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template #loadingbody>
+            <tr>
+                <td colspan="10">Chargement....</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    @if (ads && ads.length < count) { <div class="h-16 mt-3 text-center">
+        <p-button label="Voir plus" severity="info" rounded (click)="showMore()" [disabled]="loadingShowMore"
+            outlined="true">
+            @if (loading) {
+            <p-progressSpinner class="spinner" strokeWidth="6"></p-progressSpinner>
+            }
+        </p-button>
+</div>
+}
+</div>
+
+<p-dialog [(visible)]="isShowContent" [style]="{ width: '460px' }" [header]="selectedAd ? selectedAd.title : ''"
+    [modal]="true">
+    <ng-template #content>
+        @if (hasContentText(selectedAd)) {
+        <p-fieldset [legend]="selectedAd.user">
+            @if (selectedAd.content_text) {
+            <p class="m-0">
+                {{ selectedAd.content_text }}
+            </p>
+            } @else {
+            <p class="m-0">
+                <i>Aucune contenue</i>
+            </p>
+            }
+
+        </p-fieldset>
+        } @else {
+        <p-fieldset [legend]="selectedAd.user">
+            @if (selectedAd.content_image) {
+            <div class="flex justify-center">
+                <img class="content-image" [src]="getUrl(selectedAd.content_image)" alt="" width="300">
+            </div>
+            } @else {
+            <p class="m-0">
+                <i>Aucune image</i>
+            </p>
+            }
+        </p-fieldset>
+        }
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="isShowValidity" [style]="{ width: '660px' }" [header]="selectedAd ? selectedAd.title : ''"
+    [modal]="true">
+    <ng-template #content>
+        @if (selectedAd) {
+            <p-table #dt2 [value]="selectedAd.payment" dataKey="id" [loading]="loading" [rowHover]="true" [showGridlines]="true">
+                <ng-template #header>
+                    <tr>                 
+                        <th>Paiement</th>
+                        <th>Etat</th>   
+                        <th>Durrée</th>      
+                        <th>Date de paiement</th>      
+                        <th>Date de validation</th>           
+                    </tr>
+                </ng-template>
+                <ng-template #body let-pay>
+                    <tr>                       
+                        <td>
+                            <a href="/admin/payment?_id={{pay._id}}" class="link text-primary">{{ pay.ref }}</a>
+                        </td>
+                        <td>
+                            <p-tag [value]="getPaymentStatusInfo(pay.status).label" [severity]="getPaymentStatusInfo(pay.status).severity"
+                                class="dark:bg-surface-900!" />
+                        </td>
+                        <td>{{ selectedAd.duration }} jours</td>
+                        <td>{{ pay.paid_at }}</td>
+                        <td>{{ pay.validated_at }}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        }
+    </ng-template>
+</p-dialog>

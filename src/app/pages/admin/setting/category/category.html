@@ -1,9 +1,14 @@
 <div class="card mb-8!">
     <div class="font-semibold text-xl mb-4 flex justify-between">
-        <div>Catégorie</div>
+        <div>
+            <div class="mb-2">
+                Catégorie de service
+            </div>
+            <p-tag [value]="(categories ? categories.length : '0') + ' catégorie'+(categories && categories.length > 1 ? 's' : '')" severity="primary"></p-tag>
+        </div>
         <p-button icon="pi pi-plus" severity="success" (click)="form()" rounded />
     </div>
-    <p-table [value]="categories" [paginator]="true" [rows]="5" >
+    <p-table [value]="categories"  >
         <ng-template #header>
             <tr>
                 <th>Icon</th>
@@ -11,6 +16,7 @@
                 <th pSortableColumn="price">Slug<p-sortIcon field="price"></p-sortIcon></th>
                 <th>Description</th>
                 <th>Nb. Clients</th>
+                <th>Actions</th>
             </tr>
         </ng-template>
         <ng-template #body let-category>
@@ -18,12 +24,15 @@
                 <td style="width: 15%; min-width: 5rem">
                     <img [src]="getUrl(category.icon)" class="shadow-lg" alt="{{ category.label }}" width="50" />
                 </td>
-                <td style="width: 35%; min-width: 7rem">{{category.label }}</td>
+                <td style="width: 35%; min-width: 7rem">{{ category.label }}</td>
                 <td style="width: 35%; min-width: 8rem">{{ category.slug }}</td>
                 <td style="width: 35%; min-width: 8rem">{{ category.description }}</td>
-                <td style="width: 35%; min-width: 8rem"><i class="pi pi-eye me-1"></i> {{ category.count }}</td>
+                <td style="width: 35%; min-width: 8rem" class="justify-center"><i class="pi pi-user me-1"></i> {{ category.count }}</td>
                 <td style="width: 15%">
-                    <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-component p-button-text p-button-icon-only"></button>
+                    <div class="flex gap-2">
+                        <button pButton pRipple type="button" icon="pi pi-pencil" class="p-button p-component p-button-text p-button-icon-only" (click)="form(category)"></button>
+                        <button pButton pRipple type="button" icon="pi pi-trash" class="p-button p-component p-button-text p-button-danger p-button-icon-only" (click)="confirmDelete(category.id)"></button>              
+                    </div>                    
                 </td>
             </tr>
         </ng-template>
@@ -47,7 +56,7 @@
                     <label for="image">Icone de catégorie</label>
                     @if (formAction === 'UPDATE' && !isChangeFile ) {
                         <div class="flex gap-3">
-                            <img class="icon-image" [src]="previewUrl" alt="">
+                            <img class="icon-image" [src]="previewUrl" alt="" width="100">
                             <p-button icon="pi pi-pencil" class="h-full" severity="success" (click)="changeFile()"></p-button>
                         </div>
                     } @else {
@@ -72,7 +81,7 @@
                         >
                             <ng-template #empty>
                                 <div>* Importer une image</div>
-                                @if (formSend && file === null) {
+                                @if (formSend && icon === null) {
                                     <small class="text-red-500">Une icône est obligatoire</small>
                                 }
                             </ng-template>
@@ -110,3 +119,5 @@
         <p-button label="Enregistrer" icon="pi pi-check" (click)="submit()" [loading]="formLoading" />
     </ng-template>
 </p-dialog>
+
+<p-confirmdialog acceptLabel="Oui" rejectLabel="Non" [style]="{ width: '450px' }" />

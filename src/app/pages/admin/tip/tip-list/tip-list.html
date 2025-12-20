@@ -104,7 +104,7 @@
             </p-dataview>
             @if (tips.length < count) {
                 <div class="h-16 mt-3 text-center">
-                    <p-button label="Afficher plus ..." severity="info" rounded (click)="showMore()" [disabled]="loadingMore">
+                    <p-button label="Voir plus ..." severity="info" rounded (click)="showMore()" [disabled]="loadingMore">
                         @if (loadingMore) {
                             <p-progressSpinner class="spinner" strokeWidth="6"></p-progressSpinner>  
                         }
