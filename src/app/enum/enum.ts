@@ -1,7 +1,7 @@
 export class Enum {
     public static CRUD_MESSAGE = {
         success: "Opération réussie",
-        error: "Une erreur est survenue",
+        error: "Echec de l\'opération",
     }
 
     public static CONFIRM_MESSAGE = {

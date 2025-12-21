@@ -16,6 +16,7 @@ export const appRoutes: Routes = [
             { path: 'ad', loadChildren: () => import('./app/pages/admin/ad/ad.routes') },
             { path: 'setting', loadChildren: () => import('./app/pages/admin/setting/setting.routes') },
             { path: 'payment', loadChildren: () => import('./app/pages/admin/payment/payment.routes') },
+            { path: 'notification', loadChildren: () => import('./app/pages/admin/notification/notification.routes') },
         ]
     },
     {
