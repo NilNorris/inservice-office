@@ -11,7 +11,7 @@ export class LoginService {
     constructor(private http:HttpClient, private appService:AppService, private router:Router) { };
 
     login(data:any):Observable<Object> {
-      return this.http.post(this.appService.API_HOST+'/login/signin/', data);
+      return this.http.post(this.appService.API_HOST+'/signin/', data);
     }
     
 }

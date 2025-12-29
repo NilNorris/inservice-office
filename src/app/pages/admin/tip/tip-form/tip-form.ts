@@ -39,14 +39,15 @@ export class TipForm {
     content: string = "";
     selectedEntities:any[]=[];
     status:boolean=true;
-    fileTips: any[] = [];  
+    attachments: any[] = [];  
     video:File|null = null;
 
     previewCoverImageUrl:string = "";
     previewVideo:any|null = null;
     isChangeCoverImage:boolean = false;
     isChangeVideo:boolean = false;
-    currentFileTips:any = [];
+    currentAttachmentIds:any = [];
+    currentAttachments:any = [];
 
     constructor(
         private entityService:EntityService, 
@@ -85,11 +86,12 @@ export class TipForm {
 						this.content = response.content;
 						this.selectedEntities = response.entities;
 						this.status = response.is_active
-						this.fileTips = response.files;
                         this.isVideo = (response.video !== null);
                         this.previewCoverImageUrl = this.appService.IP_HOST+""+response.cover_image;
-                        this.currentFileTips = response.files;
+                        this.currentAttachmentIds = response.attachments.map((attachment:any) => attachment.id);
+                        this.currentAttachments = response.attachments;
                         this.previewVideo = response.video;
+                        console.log(this.currentAttachmentIds);
 					}
 				}
 			);
@@ -123,16 +125,16 @@ export class TipForm {
     }
   
 
-   onFileTipSelected(event:any) {
+   onAttachmentSelected(event:any) {
 		const input = event.originalEvent.target as HTMLInputElement;
 		if (!input.files || input.files.length === 0) return;
 		for (let i=0;i<input.files.length;i++) {
-			this.fileTips.push(input.files[i]);
+			this.attachments.push(input.files[i]);
 		}
 	}
 
-    onFileTipRemoved(event:any) {
-        this.fileTips = this.fileTips.filter((fileTip:any) => fileTip !== event.file);
+    onAttachmentRemoved(event:any) {
+        this.attachments = this.attachments.filter((attachment:any) => attachment !== event.file);
     }
 
     submit() {
@@ -147,11 +149,11 @@ export class TipForm {
 			formData.append('title', this.title);
 			formData.append('content', this.content);
 			formData.append('entities[]', JSON.stringify(this.selectedEntities));
-			this.fileTips.forEach((fileTip:any) => {
-                if (fileTip.id) {
-                    formData.append('file_tip_ids[]', fileTip.id);
+			this.attachments.forEach((attachment:any) => {
+                if (attachment.id) {
+                    formData.append('attachment_ids[]', attachment.id);
                 } else {
-                    formData.append('file_tips[]', fileTip);
+                    formData.append('attachments[]', attachment);
                 }				
 			})
 			if (this.isVideo && this.video) formData.append('video', this.video, this.video.name) ; else formData.append('video', "NULL");
@@ -184,8 +186,9 @@ export class TipForm {
                     return;
                 }
 				formData.append('_id', this._id);
-                formData.append('current_file_tips[]', JSON.stringify(this.currentFileTips));
-                formData
+                this.currentAttachmentIds.forEach((currentAttachmentId:any) => {
+                    formData.append('current_attachment_ids[]', currentAttachmentId);
+                });                
                 this.formLoading=true;
 				this.tipService.setTip(formData)
                 .pipe(
@@ -226,8 +229,8 @@ export class TipForm {
         }
     }
 
-    onCurrentFileTipsRemoved(file:any) {
-        this.currentFileTips = this.currentFileTips.filter((currentFileTip:any) => currentFileTip.id !== file.id);
+    onCurrentAttachmentsRemoved(file:any) {
+        this.currentAttachmentIds = this.currentAttachmentIds.filter((currentAttachmentId:any) => currentAttachmentId !== file.id);
     }
 
     formatName(name:string) {

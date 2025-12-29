@@ -195,9 +195,9 @@
                     </tr>
                 </ng-template>
                 <ng-template #body let-pay>
-                    <tr>                       
+                    <tr>     >                  
                         <td>
-                            <a href="/admin/payment?_id={{pay._id}}" class="link text-primary">{{ pay.ref }}</a>
+                            <a href="/admin/payment/detail?_id={{pay._id}}" class="link text-primary">{{ pay.ref }}</a>
                         </td>
                         <td>
                             <p-tag [value]="getPaymentStatusInfo(pay.status).label" [severity]="getPaymentStatusInfo(pay.status).severity"

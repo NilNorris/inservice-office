@@ -126,8 +126,8 @@
                 chooseLabel="Sélectionner des fichiers"  
                 uploadLabel="Télécharger maintenant" 
                 cancelLabel="Annuler l'action" 
-                (onSelect)="onFileTipSelected($event)"
-                (onRemove)="onFileTipRemoved($event)" 
+                (onSelect)="onAttachmentSelected($event)"
+                (onRemove)="onAttachmentRemoved($event)" 
                 [multiple]="true" 
                 accept="image/*,.zip,.rar,.pdf,.doc,.docx,.xlsx,.txt" 
                 maxFileSize="20000000"  
@@ -140,13 +140,13 @@
                 </ng-template>
             </p-fileupload>
         @if (formAction === 'UPDATE') {
-            @for (file of currentFileTips; track file.id) {
+            @for (file of currentAttachments; track file.id) {
                 <p-chip 
                 [label]="formatName(file.name)" 
                 class="m-1 chip-pointer"
                 (click)="download(file.file)" 
                 [removable]="true"
-                (onRemove)="onCurrentFileTipsRemoved(file)">  </p-chip>
+                (onRemove)="onCurrentAttachmentsRemoved(file)">  </p-chip>
             }
         }
         </div>
